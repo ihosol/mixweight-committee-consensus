@@ -1,0 +1,11 @@
+# python
+.venv/
+__pycache__/
+*.pyc
+
+# data & artifacts
+data/
+*.png
+
+# env
+.env

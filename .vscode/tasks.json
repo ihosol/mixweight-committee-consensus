@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run snapshots",
+      "type": "shell",
+      "command": "DEBUG=1 python snapshots.py"
+    },
+    {
+      "label": "Run risk batch",
+      "type": "shell",
+      "command": "DEBUG=1 RB_M_STRATEGY=fraction:0.4 RB_ALPHAS=0.20,0.25,0.30,0.33 RB_LAMBDAS=0,0.1,0.2,0.3 RB_TRIALS=20000 python risk_batch.py"
+    }
+  ]
+}

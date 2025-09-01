@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "snapshots.py",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/snapshots.py",
+      "env": { "DEBUG": "1" }
+    },
+    {
+      "name": "risk_batch.py",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/risk_batch.py",
+      "env": {
+        "DEBUG": "1",
+        "RB_M_STRATEGY": "fraction:0.4",
+        "RB_ALPHAS": "0.20,0.25,0.30,0.33",
+        "RB_LAMBDAS": "0,0.1,0.2,0.3",
+        "RB_TRIALS": "20000"
+      }
+    }
+  ]
+}
