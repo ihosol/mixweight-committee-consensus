@@ -1,0 +1,56 @@
+name: daily-snapshots-and-risk
+on:
+  schedule:
+    - cron: "15 02 * * *"    # щодня 02:15 UTC
+  workflow_dispatch: {}
+jobs:
+  snapshots:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - name: Install deps
+        run: pip install -r requirements.txt
+      - id: date
+        run: echo "day=$(date -u +%F)" >> $GITHUB_OUTPUT
+      - name: Run snapshots
+        env:
+          DEBUG: "1"
+          ENDPOINT_OVERRIDES_JSON: ${{ secrets.ENDPOINT_OVERRIDES_JSON || '{}' }}
+          NEAR_RPC: ${{ secrets.NEAR_RPC || 'https://rpc.mainnet.near.org' }}
+          AVAX_PCHAIN_URL: ${{ secrets.AVAX_PCHAIN_URL || 'https://api.avax.network/ext/bc/P' }}
+          TEZOS_API_URL: ${{ secrets.TEZOS_API_URL || 'https://api.tzkt.io' }}
+          SOLANA_RPC: ${{ secrets.SOLANA_RPC || 'https://api.mainnet-beta.solana.com' }}
+        run: python snapshots.py
+      - name: Upload snapshots (artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: snapshots-${{ steps.date.outputs.day }}
+          path: data/${{ steps.date.outputs.day }}/
+
+  risk:
+    runs-on: ubuntu-latest
+    needs: snapshots
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - name: Install deps
+        run: pip install -r requirements.txt
+      - id: date
+        run: echo "day=$(date -u +%F)" >> $GITHUB_OUTPUT
+      - name: Run batch risk
+        env:
+          DEBUG: "1"
+          RB_PATH: data/${{ steps.date.outputs.day }}
+          RB_ALPHAS: "0.20,0.25,0.30,0.33"
+          RB_LAMBDAS: "0,0.1,0.2,0.3"
+          RB_TRIALS: "20000"
+          RB_M_STRATEGY: "fraction:0.4"
+        run: python risk_batch.py
+      - name: Upload risk results (artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: risk-${{ steps.date.outputs.day }}
+          path: data/${{ steps.date.outputs.day }}/risk_results.csv
