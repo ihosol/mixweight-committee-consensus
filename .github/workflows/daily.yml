@@ -8,29 +8,9 @@ jobs:
   snapshots:
     runs-on: ubuntu-latest
     outputs:
-      day: ${{ steps.date.outputs.day }}   # <— додали вихід
+      day: ${{ steps.date.outputs.day }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: "3.11" }
-      - name: Install deps
-        run: pip install -r requirements.txt
-      - id: date
-        run: echo "day=$(date -u +%F)" >> $GITHUB_OUTPUT
-      - name: Run snapshots
-        env:
-          DEBUG: "1"
-          ENDPOINT_OVERRIDES_JSON: ${{ secrets.ENDPOINT_OVERRIDES_JSON || '{}' }}
-          NEAR_RPC: ${{ secrets.NEAR_RPC || 'https://rpc.mainnet.near.org' }}
-          AVAX_PCHAIN_URL: ${{ secrets.AVAX_PCHAIN_URL || 'https://api.avax.network/ext/bc/P' }}
-          TEZOS_API_URL: ${{ secrets.TEZOS_API_URL || 'https://api.tzkt.io' }}
-          SOLANA_RPC: ${{ secrets.SOLANA_RPC || 'https://api.mainnet-beta.solana.com' }}
-        run: python snapshots.py
-      - name: Upload snapshots (artifact)
-        uses: actions/upload-artifact@v4
-        with:
-          name: snapshots-${{ steps.date.outputs.day }}
-          path: data/${{ steps.date.outputs.day }}/
+      # ... (без змін)
 
   risk:
     runs-on: ubuntu-latest
@@ -41,20 +21,37 @@ jobs:
         with: { python-version: "3.11" }
       - name: Install deps
         run: pip install -r requirements.txt
-      - name: Download snapshots artifact           # <— додали
+
+      # >>> НОВЕ: створюємо директорію призначення
+      - name: Prepare target dir
+        run: mkdir -p data/${{ needs.snapshots.outputs.day }}
+
+      # >>> НОВЕ: завантажуємо артефакт САМЕ в data/<day>/
+      - name: Download snapshots artifact
         uses: actions/download-artifact@v4
         with:
           name: snapshots-${{ needs.snapshots.outputs.day }}
-          path: .                                   # розпакує у корінь → з’явиться data/<day>/
+          path: data/${{ needs.snapshots.outputs.day }}
+
+      # >>> НОВЕ: діагностика — покажемо, що всередині
+      - name: List inputs
+        run: |
+          set -euxo pipefail
+          ls -la
+          ls -la data
+          ls -la data/${{ needs.snapshots.outputs.day }} || true
+          find data/${{ needs.snapshots.outputs.day }} -maxdepth 1 -type f -name '*_weights.csv' -print
+
       - name: Run batch risk
         env:
           DEBUG: "1"
-          RB_PATH: data/${{ needs.snapshots.outputs.day }}   # <— використовуємо те саме day
+          RB_PATH: data/${{ needs.snapshots.outputs.day }}
           RB_ALPHAS: "0.20,0.25,0.30,0.33"
           RB_LAMBDAS: "0,0.1,0.2,0.3"
           RB_TRIALS: "20000"
           RB_M_STRATEGY: "fraction:0.4"
         run: python risk_batch.py
+
       - name: Upload risk results (artifact)
         uses: actions/upload-artifact@v4
         with:
@@ -70,13 +67,26 @@ jobs:
         with: { python-version: "3.11" }
       - name: Install deps
         run: pip install -r requirements.txt
-      - name: Download risk artifact                # <— додали
+
+      # >>> НОВЕ: забираємо готовий risk-артефакт у data/<day>/
+      - name: Prepare target dir
+        run: mkdir -p data/${{ needs.snapshots.outputs.day }}
+      - name: Download risk artifact
         uses: actions/download-artifact@v4
         with:
           name: risk-${{ needs.snapshots.outputs.day }}
-          path: data/${{ needs.snapshots.outputs.day }}      # покладемо туди ж
+          path: data/${{ needs.snapshots.outputs.day }}
+
+      # >>> НОВЕ: діагностика
+      - name: List risk files
+        run: |
+          set -euxo pipefail
+          ls -la data/${{ needs.snapshots.outputs.day }}
+          head -n 5 data/${{ needs.snapshots.outputs.day }}/risk_results.csv || true
+
       - name: Build visualizations
         run: python viz_daily.py --path data/${{ needs.snapshots.outputs.day }}
+
       - name: Upload viz (artifact)
         uses: actions/upload-artifact@v4
         with:
