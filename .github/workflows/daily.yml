@@ -3,7 +3,8 @@ on:
   schedule:
     - cron: "15 02 * * *"
   workflow_dispatch: {}
-
+permissions:
+  contents: write
 jobs:
   snapshots:
     runs-on: ubuntu-latest
