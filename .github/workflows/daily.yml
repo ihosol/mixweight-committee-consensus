@@ -31,6 +31,7 @@ jobs:
         with:
           name: snapshots-${{ steps.date.outputs.day }}
           path: data/${{ steps.date.outputs.day }}/
+      
 
   risk:
     runs-on: ubuntu-latest
@@ -107,3 +108,10 @@ jobs:
         with:
           name: viz-${{ needs.snapshots.outputs.day }}
           path: data/${{ needs.snapshots.outputs.day }}/viz/
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: data/${{ needs.snapshots.outputs.day }}
+          publish_branch: gh-pages
+          destination_dir: ${{ needs.snapshots.outputs.day }}
