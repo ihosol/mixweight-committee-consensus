@@ -1,8 +1,8 @@
 name: daily-snapshots-risk-viz
-on:
-  schedule:
-    - cron: "15 02 * * *"
-  workflow_dispatch: {}
+#on:
+#  schedule:
+#    - cron: "15 02 * * *"
+#  workflow_dispatch: {}
 permissions:
   contents: write
 jobs:
