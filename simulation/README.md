@@ -5,15 +5,20 @@ experiments: an on-chain controller that mixes stake-proportional weights with a
 tenure-based baseline, `q_i(λ) = (1−λ)·w_i + λ·b_i`, and adjusts λ from measured
 decentralization signals.
 
-These are the scripts the experiments were run with, published so the procedure
-can be read and checked. The repository root already holds the snapshot
-collection and static risk evaluation (`snapshots.py`, `risk_sim.py`,
-`risk_batch.py`); this directory covers the dynamic, on-chain part.
+This directory is self-contained: the chain module, the scripts that drive it,
+the scenario definitions, and the summary tables the experiments produced. The
+repository root holds the complementary static half — snapshot collection and
+risk evaluation across live PoS networks (`snapshots.py`, `risk_sim.py`,
+`risk_batch.py`).
 
 ## What is here
 
 | Path | Contents |
 |---|---|
+| `chain/` | the Cosmos-SDK application, including `x/adaptivecommittee`: controller state, mixed-weight distribution, committee draw, diagnostic event |
+| `build_chain.sh` | fetches dependencies and builds the chain binary |
+| `results/tables/` | the three curated tables the dissertation reports |
+| `results/scenarios/` | per-scenario aggregates, mean ± sd across three seeds |
 | `scripts/epochrun.py` | main epoch-mode runner: drives a local network, submits draws, writes per-draw and per-epoch CSVs |
 | `scripts/epochrun_multiseed.py` | runs one scenario across several seeds and aggregates mean ± sd |
 | `scripts/compute_realized_capture.py` | realized capture frequency from the per-draw layer, with Clopper–Pearson bounds |
@@ -21,17 +26,22 @@ collection and static risk evaluation (`snapshots.py`, `risk_sim.py`,
 | `scripts/make_*.py` | figure and table generation from the aggregated results |
 | `configs/` | scenario definitions: attacker profile, cohort size, committee size, epoch layout |
 
-## What is not here
+## Building
 
-The chain itself. The scripts drive a Cosmos-SDK application exposing an
-`x/adaptivecommittee` module, and expect its binary via `POC_CHAIND` or at a
-pinned build path. Without that binary the scripts are readable and their logic
-checkable, but a full run is not reproducible from this directory alone.
+```bash
+bash build_chain.sh
+```
+
+The script locates a Go toolchain (including the common off-`PATH` install
+locations), checks the version against what `go.mod` requires, downloads and
+verifies the modules, builds the binary, and confirms that the resulting
+executable actually exposes the `adaptivecommittee` module rather than only
+compiling. The first run fetches the Cosmos SDK and takes several minutes.
 
 ## Running
 
 ```bash
-export POC_CHAIND=/path/to/chain-binary
+export POC_CHAIND="$PWD/chain/build/chain-five-threed"
 python3 scripts/epochrun_multiseed.py configs/FP_A1_main_12h_c9_k6_b033_burst.yaml \
     --seeds 1,2,3 --artifacts-subdir pub_default_burst
 ```
@@ -45,6 +55,32 @@ bash scripts/run_ablation_3seed.sh
 
 Results are written under an `artifacts/<subdir>/` tree: per-draw CSV, per-epoch
 summary, aggregated final table, and plots.
+
+## Published results
+
+`results/scenarios/` carries the aggregated table of each of the twenty-three
+canonical scenarios — mean ± standard deviation across three independent runs —
+covering the headline security package, the trickle companion, the signal
+ablation, the attacker-share sweep, the fairness pairs and the age-farming case.
+
+`results/tables/` carries the three curated tables: the final results table, the
+realized capture frequency with its bounds, and the per-draw rows those
+frequencies are computed from, so the counts can be rederived rather than taken
+on trust:
+
+```bash
+python3 scripts/compute_realized_capture.py --draws-csv results/tables/REALIZED_CAPTURE_DRAWS.csv
+```
+
+The raw per-run trees are not published: they run to well over a gigabyte and
+are regenerable from the configurations above.
+
+One caveat on reading them. Three runs establish the repeatability of the
+harness, not a statistical difference between configurations. For weight-share
+metrics the between-run spread is at most 0.03 percentage points, so the mean is
+a fair headline value. For event-counting metrics it is near 5 points, larger
+than the differences between arms, so those columns describe what was observed
+and do not generalize.
 
 ### Two operational notes
 
