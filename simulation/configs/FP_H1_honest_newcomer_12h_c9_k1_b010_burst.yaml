@@ -1,0 +1,50 @@
+chain:
+  chain_id: poc-1
+  denom: stake
+
+localnet:
+  nodes: 13
+  p2p_port_base: 26680
+  rpc_port_base: 36657
+  api_port_base: 31317
+  grpc_port_base: 39090
+
+experiment:
+  honest_nodes: 12
+  artifacts_subdir: FP_H1_honest_newcomer_12h_c9_k1_b010_burst
+
+attack:
+  beta: 0.10
+  sybil_k_values: [1]
+  attacker_profile: burst
+  entry_kind: honest_newcomer
+
+workload:
+  committee_mode: fixed
+  committee_size_values: [9]
+  lambda_ppm_values: [0]
+
+tx:
+  from: alice
+  keyring_backend: test
+  fees: 2000stake
+  gas: 2000000
+  broadcast_mode: sync
+  skip_set_lambda: true
+
+coalition:
+  topk_values: [1, 2, 3, 4, 5]
+
+epoch:
+  epoch_blocks: 4
+  pre_attack_epochs: 20
+  post_attack_epochs: 30
+  draws_per_epoch: 8
+  post_attack_draw_limit: 0
+  reuse_checkpoint: false
+  rebuild_checkpoint: true
+  sybil_at_genesis: false
+
+report:
+  final_table_single_row: false
+  static_lambda_ppm: 300000
