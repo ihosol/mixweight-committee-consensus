@@ -1,0 +1,12 @@
+syntax = "proto3";
+package chain.adaptivecommittee;
+
+import "gogoproto/gogo.proto";
+import "chain/adaptivecommittee/params.proto";
+
+option go_package = "chain-five-three/x/adaptivecommittee/types";
+
+// GenesisState defines the adaptivecommittee module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}

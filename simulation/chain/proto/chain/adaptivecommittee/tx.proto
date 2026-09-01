@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package chain.adaptivecommittee;
+
+option go_package = "chain-five-three/x/adaptivecommittee/types";
+
+import "cosmos/msg/v1/msg.proto";
+
+// Msg defines the Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  rpc DrawCommittee (MsgDrawCommittee) returns (MsgDrawCommitteeResponse);
+  rpc SetLambda     (MsgSetLambda    ) returns (MsgSetLambdaResponse    );
+}
+message MsgDrawCommittee {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  uint64 size    = 2;
+  string tag     = 3;
+}
+
+message MsgDrawCommitteeResponse {}
+
+message MsgSetLambda {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator   = 1;
+  uint64 lambdaPpm = 2;
+}
+
+message MsgSetLambdaResponse {}
+

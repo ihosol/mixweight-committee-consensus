@@ -1,0 +1,54 @@
+chain:
+  chain_id: poc-1
+  denom: stake
+
+localnet:
+  nodes: 18
+  p2p_port_base: 26680
+  rpc_port_base: 36657
+  api_port_base: 31317
+  grpc_port_base: 39090
+
+experiment:
+  honest_nodes: 12
+  artifacts_subdir: FP_A4_agefarming_12h_c9_k6_b033_burst
+
+# Age-farming threat model: sybil identities exist from genesis (sybil_at_genesis=true),
+# so by the time the attack window starts they have accumulated full baseline age
+# alongside the honest validators. This stresses the non-transferable-age assumption
+# and the one-shot anti-Sybil lemma in Ch3 §3.4 by allowing a patient attacker to
+# bypass the persistence penalty. Reported as a limitation in Ch3 §3.6.
+attack:
+  beta: 0.33
+  sybil_k_values: [6]
+  attacker_profile: burst
+
+workload:
+  committee_mode: fixed
+  committee_size_values: [9]
+  lambda_ppm_values: [0]
+
+tx:
+  from: alice
+  keyring_backend: test
+  fees: 2000stake
+  gas: 2000000
+  broadcast_mode: sync
+  skip_set_lambda: true
+
+coalition:
+  topk_values: [1, 2, 3, 4, 5]
+
+epoch:
+  epoch_blocks: 4
+  pre_attack_epochs: 20
+  post_attack_epochs: 30
+  draws_per_epoch: 8
+  post_attack_draw_limit: 0
+  reuse_checkpoint: false
+  rebuild_checkpoint: true
+  sybil_at_genesis: true
+
+report:
+  final_table_single_row: false
+  static_lambda_ppm: 300000

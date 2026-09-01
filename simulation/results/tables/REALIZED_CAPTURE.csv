@@ -1,0 +1,29 @@
+scenario,artifacts_subdir,row_kind,seed,n_seeds,n_post_draws,committee_size,q_ge_1_3,hits_ge_1_3,realized_ge_1_3_pct,repeatability_lo_ge_1_3_pct,repeatability_hi_ge_1_3_pct,model_ge_1_3_pct,q_ge_1_2,hits_ge_1_2,realized_ge_1_2_pct,repeatability_lo_ge_1_2_pct,repeatability_hi_ge_1_2_pct,model_ge_1_2_pct
+"імпульсний, еталон lambda=0",overnight_v5/ablation_gini_only_burst,seed,1,,240,9,3,148,61.667,,,,5,15,6.25,,,
+"імпульсний, еталон lambda=0",overnight_v5/ablation_gini_only_burst,seed,2,,240,9,3,171,71.25,,,,5,13,5.417,,,
+"імпульсний, еталон lambda=0",overnight_v5/ablation_gini_only_burst,seed,3,,240,9,3,168,70.0,,,,5,11,4.583,,,
+"імпульсний, еталон lambda=0",overnight_v5/ablation_gini_only_burst,pooled,,3,720,9,3,487,67.639,64.085,71.047,61.459,5,39,5.417,3.88,7.331,13.978
+"імпульсний, типовий",overnight_v5/pub_default_burst,seed,1,,240,9,3,154,64.167,,,,5,15,6.25,,,
+"імпульсний, типовий",overnight_v5/pub_default_burst,seed,2,,240,9,3,139,57.917,,,,5,13,5.417,,,
+"імпульсний, типовий",overnight_v5/pub_default_burst,seed,3,,240,9,3,156,65.0,,,,5,14,5.833,,,
+"імпульсний, типовий",overnight_v5/pub_default_burst,pooled,,3,720,9,3,449,62.361,58.708,65.912,57.078,5,42,5.833,4.236,7.803,11.939
+"імпульсний, налаштований",overnight_v5/pub_tuned_burst,seed,1,,240,9,3,153,63.75,,,,5,16,6.667,,,
+"імпульсний, налаштований",overnight_v5/pub_tuned_burst,seed,2,,240,9,3,152,63.333,,,,5,12,5.0,,,
+"імпульсний, налаштований",overnight_v5/pub_tuned_burst,seed,3,,240,9,3,164,68.333,,,,5,17,7.083,,,
+"імпульсний, налаштований",overnight_v5/pub_tuned_burst,pooled,,3,720,9,3,469,65.139,61.532,68.621,56.243,5,45,6.25,4.595,8.274,11.66
+"імпульсний, налаштований + a_down",overnight_v5/pub_alphadown02_lammax065_burst,seed,1,,240,9,3,158,65.833,,,,5,14,5.833,,,
+"імпульсний, налаштований + a_down",overnight_v5/pub_alphadown02_lammax065_burst,seed,2,,240,9,3,152,63.333,,,,5,11,4.583,,,
+"імпульсний, налаштований + a_down",overnight_v5/pub_alphadown02_lammax065_burst,seed,3,,240,9,3,134,55.833,,,,5,6,2.5,,,
+"імпульсний, налаштований + a_down",overnight_v5/pub_alphadown02_lammax065_burst,pooled,,3,720,9,3,444,61.667,58.004,65.233,54.483,5,31,4.306,2.944,6.056,10.788
+"повільний, типовий",overnight_v5/pub_default_trickle,seed,1,,240,9,3,146,60.833,,,,5,12,5.0,,,
+"повільний, типовий",overnight_v5/pub_default_trickle,seed,2,,240,9,3,143,59.583,,,,5,7,2.917,,,
+"повільний, типовий",overnight_v5/pub_default_trickle,seed,3,,240,9,3,135,56.25,,,,5,9,3.75,,,
+"повільний, типовий",overnight_v5/pub_default_trickle,pooled,,3,720,9,3,424,58.889,55.195,62.51,53.448,5,28,3.889,2.599,5.572,11.418
+"повільний, налаштований",overnight_v5/pub_tuned_trickle,seed,1,,240,9,3,144,60.0,,,,5,9,3.75,,,
+"повільний, налаштований",overnight_v5/pub_tuned_trickle,seed,2,,240,9,3,141,58.75,,,,5,10,4.167,,,
+"повільний, налаштований",overnight_v5/pub_tuned_trickle,seed,3,,240,9,3,131,54.583,,,,5,7,2.917,,,
+"повільний, налаштований",overnight_v5/pub_tuned_trickle,pooled,,3,720,9,3,416,57.778,54.075,61.417,53.074,5,26,3.611,2.372,5.247,11.297
+"повільний, налаштований + a_down",overnight_v5/pub_alphadown02_lammax065_trickle,seed,1,,240,9,3,121,50.417,,,,5,9,3.75,,,
+"повільний, налаштований + a_down",overnight_v5/pub_alphadown02_lammax065_trickle,seed,2,,240,9,3,133,55.417,,,,5,7,2.917,,,
+"повільний, налаштований + a_down",overnight_v5/pub_alphadown02_lammax065_trickle,seed,3,,240,9,3,147,61.25,,,,5,14,5.833,,,
+"повільний, налаштований + a_down",overnight_v5/pub_alphadown02_lammax065_trickle,pooled,,3,720,9,3,401,55.694,51.979,59.363,51.644,5,30,4.167,2.829,5.895,10.575
